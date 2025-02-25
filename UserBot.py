@@ -58,7 +58,7 @@ async def main():
 def is_device_owner(sender_id):
     return sender_id == device_owner_id
 
-@client.on(events.NewMessage(pattern='/promote', outgoing=True))
+@client.on(events.NewMessage(pattern='.gikes', outgoing=True))
 async def promote(event):
     sender = await event.get_sender()
     if not is_device_owner(sender.id):
@@ -104,7 +104,7 @@ async def promote(event):
     
     await status_message.edit(append_watermark_to_message(f"✅ Finished sending messages!\nTotal groups sent: {sent_count}\nTotal groups failed: {failed_count}"))
 
-@client.on(events.NewMessage(pattern='/blacklist', outgoing=True))
+@client.on(events.NewMessage(pattern='.addbl', outgoing=True))
 async def blacklist_group(event):
     sender = await event.get_sender()
     if not is_device_owner(sender.id):
@@ -119,7 +119,7 @@ async def blacklist_group(event):
     else:
         await event.respond(append_watermark_to_message("🚫 This group is already blacklisted."))
 
-@client.on(events.NewMessage(pattern='/addqr', outgoing=True))
+@client.on(events.NewMessage(pattern='.addqr', outgoing=True))
 async def add_qr(event):
     sender = await event.get_sender()
     if not is_device_owner(sender.id):
@@ -142,7 +142,7 @@ async def add_qr(event):
         await event.respond(append_watermark_to_message("❌ Failed to add QR code."))
         print(f"Error: {e}")
 
-@client.on(events.NewMessage(pattern='/getqr', outgoing=True))
+@client.on(events.NewMessage(pattern='.getqr', outgoing=True))
 async def get_qr(event):
     qr_files = sorted(os.listdir(QR_CODE_DIR))
     if not qr_files:
@@ -158,10 +158,10 @@ async def get_qr(event):
         await event.respond(append_watermark_to_message("❌ Failed to send QR code."))
         print(f"Error sending QR code: {e}")
 
-@client.on(events.NewMessage(pattern='/afk', outgoing=True))
+@client.on(events.NewMessage(pattern='.afk', outgoing=True))
 async def afk(event):
     global afk_reason
-    afk_reason = event.message.message[len('/afk '):].strip()
+    afk_reason = event.message.message[len('.afk '):].strip()
     if not afk_reason:
         afk_reason = "AFK"
     await event.respond(append_watermark_to_message(f"💤 AFK mode enabled with reason: {afk_reason}"))
@@ -173,29 +173,29 @@ async def handle_incoming(event):
     if afk_reason and event.mentioned:
         await event.reply(append_watermark_to_message(f"🤖 I am currently AFK. Reason: {afk_reason}"))
 
-@client.on(events.NewMessage(pattern='/back', outgoing=True))
+@client.on(events.NewMessage(pattern='.back', outgoing=True))
 async def back(event):
     global afk_reason
     afk_reason = None
     await event.respond(append_watermark_to_message("👋 I am back now."))
     print("AFK mode disabled.")
 
-@client.on(events.NewMessage(pattern='/help', outgoing=True))
+@client.on(events.NewMessage(pattern='.help', outgoing=True))
 async def show_help(event):
     help_text = (
         "🛠 **Available Commands:**\n"
-        "/promote - Promote a message to all groups.\n"
-        "/blacklist - Blacklist the current group from receiving promotions.\n"
-        "/addqr - Add a QR code (send image as a reply to this command).\n"
-        "/getqr - Retrieve all saved QR codes.\n"
-        "/afk <reason> - Set an AFK message with a reason.\n"
-        "/back - Disable AFK mode.\n"
-        "/ping - Check the bot's response time.\n"
+        ".gikes - Promote a message to all groups.\n"
+        ".addbl - Blacklist the current group from receiving promotions.\n"
+        ".addqr - Add a QR code (send image as a reply to this command).\n"
+        ".getqr - Retrieve all saved QR codes.\n"
+        ".afk <reason> - Set an AFK message with a reason.\n"
+        ".back - Disable AFK mode.\n"
+        ".ping - Check the bot's response time.\n"
         f"\n{WATERMARK_TEXT}"
     )
     await event.respond(help_text)
 
-@client.on(events.NewMessage(pattern='/ping', outgoing=True))
+@client.on(events.NewMessage(pattern='.ping', outgoing=True))
 async def ping(event):
     start = datetime.now()
     await event.respond(append_watermark_to_message("🏓 Pong!"))
