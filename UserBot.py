@@ -7,7 +7,7 @@ api_id = '29798494'
 api_hash = '53273c1de3e68a9ecdb90de2dcf46f6c'
 
 client = TelegramClient('userbot', api_id, api_hash)
-device_owner_id = None
+device_owner_id = "7937406397"
 afk_reason = None
 
 # Directory to store QR code images
